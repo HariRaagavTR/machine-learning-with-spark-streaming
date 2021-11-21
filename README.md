@@ -1,4 +1,6 @@
-# Big Data: Machine Learning with Spark Streaming 
+
+ 
+# Big Data: Machine Learning with Spark Streaming
 
 ### ℹ️ About: 
 This is the final project under the course of Big Data (UE19CS322) for 5th semester in PES University. <br>
@@ -20,9 +22,9 @@ The data source is a stream and there is the constraint of handling batches of s
 <br>
 
 ### 💾 Dataset chosen:
-Pokemon <br> 
+Pokemon <br>
+The original dataset can be found [here](https://www.kaggle.com/thedagger/pokemon-generation-one).<br> 
 The dataset used for the project can be found [here](https://drive.google.com/drive/folders/10Ys7jqesPfChrAahi4y6rw7FDCGPFFA0?usp=sharing).<br>
-The original dataset can be found [here](https://www.kaggle.com/thedagger/pokemon-generation-one).<br>
 
 ### 👥 Contributors:
 👦 [Hari Raagav T R](https://github.com/HariRaagavTR) <br>
