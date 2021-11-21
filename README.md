@@ -21,7 +21,7 @@ The data source is a stream and there is the constraint of handling batches of s
 
 ### Dataset chosen:
 Pokemon <br>
-The dataset used for the project can be found [here](https://drive.google.com/drive/folders/10Ys7jqesPfChrAahi4y6rw7FDCGPFFA0?usp=sharing)
+The dataset used for the project can be found [here](https://drive.google.com/drive/folders/10Ys7jqesPfChrAahi4y6rw7FDCGPFFA0?usp=sharing)<br>
 The original dataset can be found [here](https://www.kaggle.com/thedagger/pokemon-generation-one)<br>
 
 ### Contributors:
