@@ -19,6 +19,11 @@ The data source is a stream and there is the constraint of handling batches of s
 3. Spark 3.1.2
 <br>
 
+### Dataset chosen:
+Pokemon <br>
+The dataset used for the project can be found [here](https://drive.google.com/drive/folders/10Ys7jqesPfChrAahi4y6rw7FDCGPFFA0?usp=sharing)
+The original dataset can be found [here](https://www.kaggle.com/thedagger/pokemon-generation-one)<br>
+
 ### Contributors:
 [Hari Raagav T R](https://github.com/HariRaagavTR) <br>
 [Manasa S M](https://github.com/manasa-sm) <br>
