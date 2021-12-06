@@ -1,20 +1,48 @@
 #!/usr/bin/env python3
-
-import sys
-from pyspark import SparkContext
-from pyspark.streaming import StreamingContext
-
-sparkContext = SparkContext.getOrCreate()
-sparkStreamingContext = StreamingContext(sparkContext, 1)
-
-# TCP_IP = sys.argv[1]
-# TCP_PORT = int(sys.argv[2])
+from pyspark.sql import SparkSession
 
 TCP_IP = 'localhost'
 TCP_PORT = 6100
+BATCH_SIZE = 10
 
-dataStream = sparkStreamingContext.socketTextStream(TCP_IP, TCP_PORT)
-dataStream.pprint()
+spark = SparkSession \
+    .builder \
+    .appName("Image Classifier") \
+    .getOrCreate()
 
-sparkStreamingContext.start()
-sparkStreamingContext.awaitTermination()
+dfFromStream = spark.readStream \
+      .format("socket") \
+      .option("host", TCP_IP) \
+      .option("port", TCP_PORT) \
+      .load()
+
+# schema =  StructType([
+#     StructField("img", StringType(), True),
+#     StructField("label", StringType(), True)
+# ])
+
+# convertedDataFrame = dfFromStream \
+#     .withColumn("jsonData",from_json(col("value"), schema)) \
+#     .select("jsonData.*")
+    
+query = dfFromStream.writeStream \
+    .outputMode("append") \
+    .format("console") \
+    .start()
+    
+query.awaitTermination()
+
+"""
+"0": {
+    "img": [[[]]]
+    "label": "className"
+},
+"1": {
+    "img": [[[]]]
+    "label": "className"
+},
+"2": {
+    "img": [[[]]]
+    "label": "className"
+},
+"""
