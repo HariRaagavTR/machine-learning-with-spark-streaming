@@ -4,6 +4,7 @@ from pyspark.sql import SQLContext
 from pyspark.streaming import StreamingContext
 import numpy as np
 import json
+from analysis import preprocess
 
 def convertBatchToArray(batch):
     """
@@ -16,12 +17,16 @@ def convertBatchToArray(batch):
     try:
         data = json.loads(batch.collect()[0])
         values = []
+        
         for index in data:
             record = data[index]
-            image = np.asarray(record['image'])
+            # Preprocessing each image directly.
+            image = preprocess(np.asarray(record['image']))
             label = record['label']
             values.append(np.asarray([image, label]))
+        
         return np.asarray(values)
+    
     except:
         print('Error: Empty or Invalid Batch Received.')
         return np.asarray([])
@@ -38,9 +43,8 @@ def processBatch(batch):
     Returns:
         N/A.
     """
-    if not batch.isEmpty():
-        values = convertBatchToArray(batch)
-        print(values)
+    values = convertBatchToArray(batch)
+    print(values)
 
 TCP_IP = 'localhost'
 TCP_PORT = 6100
