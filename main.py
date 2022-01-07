@@ -1,10 +1,40 @@
 #!/usr/bin/env python3
+# Command: <path-to-spark-submit> main.py [-m <modelType>] [-e <True/False>]
 from pyspark import SparkContext
 from pyspark.sql import SQLContext
 from pyspark.streaming import StreamingContext
 import numpy as np
 import json
-from analysis import preprocess
+import argparse
+from analysis import preprocess, train, test
+
+parser = argparse.ArgumentParser(description = 'Receives data from a TCP socket and trains ML models.')
+
+# Testing Argument. Default: False
+parser.add_argument(
+    '--test', '-t',
+    help = 'Test Model?',
+    required = False,
+    type = bool,
+    default = False
+)
+
+# Model Name Argument. Default: LRClassifier
+parser.add_argument(
+    '--model', '-m',
+    help = 'Model Name',
+    required = False,
+    type = str,
+    default = 'LRClassifier'
+)
+
+args = parser.parse_args()
+testData = args.test
+modelType = args.model
+
+if modelType not in ['NBClassifier', 'LRClassifier', 'SVMClassifier']:
+    print('Critical Error: Invalid Model Name. Exiting Program.')
+    exit()
 
 def convertBatchToArray(batch):
     """
@@ -12,24 +42,25 @@ def convertBatchToArray(batch):
     Args:
         batch (pyspark.rdd.RDD): A batch read from the spark stream.
     Returns:
-        numpy.array: The batch data represented as a numpy array.
+        tuple(numpy.array, numpy.array): The batch data (X, Y).
     """
     try:
         data = json.loads(batch.collect()[0])
-        values = []
+        images = []
+        labels = []
         
         for index in data:
             record = data[index]
             # Preprocessing each image directly.
-            image = preprocess(np.asarray(record['image']))
-            label = record['label']
-            values.append(np.asarray([image, label]))
+            preprocessedImage = preprocess(np.asarray(record["image"]))
+            images.append(preprocessedImage)
+            labels.append(record['label'])
         
-        return np.asarray(values)
+        return (np.asarray(images), np.asarray(labels))
     
     except:
         print('Error: Empty or Invalid Batch Received.')
-        return np.asarray([])
+        return (np.asarray([]), np.asarray([]))
     
 def processBatch(batch):
     """
@@ -43,8 +74,11 @@ def processBatch(batch):
     Returns:
         N/A.
     """
-    values = convertBatchToArray(batch)
-    print(values)
+    X, Y = convertBatchToArray(batch)
+    if not testData:
+        train(X, Y, modelType)
+    else:
+        test(X, Y, modelType)
 
 TCP_IP = 'localhost'
 TCP_PORT = 6100
