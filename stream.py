@@ -11,7 +11,7 @@ from tqdm.auto import tqdm
 TCP_IP = "localhost"
 TCP_PORT = 6100
 
-parser = argparse.ArgumentParser(description = 'Streams to Spark Streaming Context')
+parser = argparse.ArgumentParser(description = 'Streams data to Spark Streaming Context.')
 
 # Batch Size Argument. Default: 100
 parser.add_argument(
@@ -26,7 +26,7 @@ parser.add_argument(
 parser.add_argument(
     '--endless', '-e',
     help = 'Enable Endless Stream',
-    required=False,
+    required = False,
     type = bool,
     default = False
 )
@@ -37,7 +37,7 @@ def sendPokemonBatchFileToSpark(tcpConnection, inputBatchFile):
     Function that sends the dataset in batches to the spark client.
 
     Args:
-        tcpConnection ([type]): Reference to TCP connection socket to the client.
+        tcpConnection (socket.socket): Reference to TCP connection socket to the client.
         inputBatchFile (str): Batch file name.
     Returns:
         N/A.
@@ -124,10 +124,7 @@ def connectTCP():
 
 if __name__ == '__main__':
     args = parser.parse_args()
-    print(args)
-
     batchSize = args.batch_size
-    print(batchSize)
     endless = args.endless
 
     tcpConnection, _ = connectTCP()
