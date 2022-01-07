@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-# Command: <path-to-spark-submit> main.py [-m <modelType>] [-e <True/False>]
+# Command: <path-to-spark-submit> main.py [-t] [-m <modelType>]
+
 from pyspark import SparkContext
 from pyspark.sql import SQLContext
 from pyspark.streaming import StreamingContext
