@@ -33,7 +33,7 @@ args = parser.parse_args()
 testData = args.test
 modelType = args.model
 
-if modelType not in ['NBClassifier', 'LRClassifier', 'SVMClassifier']:
+if modelType not in ['MNBClassifier', 'BNBClassifier', 'PAClassifier', 'SVMClassifier', 'PerceptronClassifier']:
     print('Critical Error: Invalid Model Name. Exiting Program.')
     exit()
 
