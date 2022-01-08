@@ -1,5 +1,7 @@
 pokemon/
 testImages/
+testCode.py
 sentiment/
 spam/
 dataset-readme.md
+__pycache__/
