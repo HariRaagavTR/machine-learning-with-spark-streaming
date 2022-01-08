@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
-import pickle
 import numpy as np
 import cv2
 from skimage.color import rgb2gray
 from scipy.ndimage import median_filter
+import os
 
 from sklearn.linear_model import SGDClassifier
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import PassiveAggressiveClassifier
 from sklearn.naive_bayes import MultinomialNB
+from sklearn.naive_bayes import BernoulliNB
+from sklearn.linear_model import Perceptron
+from joblib import dump, load
 
-MODEL_FOLDER = './model'
+MODEL_FOLDER = './models'
 
 def preprocess(image: np.ndarray):
     """
@@ -54,9 +57,11 @@ def createNewModel(modelType):
         The respective model reference.
     """
     return {
-        'NBClassifier': MultinomialNB(),
-        'LRClassifier': LogisticRegression(),
-        'SVMClassifier': SGDClassifier()
+        'SVMClassifier': SGDClassifier(),
+        'PAClassifier': PassiveAggressiveClassifier(),
+        'MNBClassifier': MultinomialNB(),
+        'BNBClassifier': BernoulliNB(),
+        'PerceptronClassifier': Perceptron(),
     } [modelType]
     
 def train(X, Y, modelType):
@@ -73,16 +78,20 @@ def train(X, Y, modelType):
     Returns:
         N/A.
     """
+    # Creating "models" folder if unavailable.
+    if not os.path.exists(MODEL_FOLDER):
+        os.makedirs(MODEL_FOLDER)
+
     try:
-        model = pickle.load(open(MODEL_FOLDER + '/' + modelType + '.sav', 'rb'))
+        model = load(MODEL_FOLDER + '/' + modelType + '.joblib')
     except:
         print('Info: Saved model does not exist. Creating new ' + modelType + ' model.')
         model = createNewModel(modelType)
     
-    model.partial_fit(X, Y)
+    model.partial_fit(X, Y, classes = np.unique(Y))
     print('Info: Partially trained ' + modelType + ' model.')
     
-    pickle.dump(model, open(MODEL_FOLDER + '/' + modelType + '.sav', 'wb'))
+    dump(model, MODEL_FOLDER + '/' + modelType + '.joblib')
     print('Info: Saved ' + modelType + ' model @ ' + MODEL_FOLDER + '/' + modelType + '.sav')
 
 def test(X, Y, modelType):
@@ -97,7 +106,7 @@ def test(X, Y, modelType):
         N/A.
     """
     try:
-        model = pickle.load(open(MODEL_FOLDER + '/' + modelType + '.sav', 'rb'))
+        model = load(MODEL_FOLDER + '/' + modelType + '.joblib')
         print('Batch Accuracy:', model.score(X, Y))
     except:
         print('Error: Unable to test. Saved model does not exist.')
