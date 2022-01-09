@@ -64,7 +64,7 @@ def createNewModel(modelType):
         'PerceptronClassifier': Perceptron(),
     } [modelType]
     
-def train(X, Y, modelType):
+def train(X, Y, modelType, allLabels):
     """
     Function that doesn the following:
     1. Create/Load machine learning model.
@@ -75,6 +75,7 @@ def train(X, Y, modelType):
         X (numpy.array): Feature array, ie, image array.
         Y (numpy.array): Label array.
         modelType (str): Specifies the model name.
+        allLabels (numpy.array): All unique classes encountered so far.
     Returns:
         N/A.
     """
@@ -88,7 +89,7 @@ def train(X, Y, modelType):
         print('Info: Saved model does not exist. Creating new ' + modelType + ' model.')
         model = createNewModel(modelType)
     
-    model.partial_fit(X, Y, classes = np.unique(Y))
+    model.partial_fit(X, Y, classes = allLabels)
     print('Info: Partially trained ' + modelType + ' model.')
     
     dump(model, MODEL_FOLDER + '/' + modelType + '.joblib')

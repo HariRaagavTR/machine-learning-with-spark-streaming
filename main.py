@@ -33,6 +33,9 @@ args = parser.parse_args()
 testData = args.test
 modelType = args.model
 
+# Global variable of all unique classes.
+allLabels = np.asarray([])
+
 if modelType not in ['MNBClassifier', 'BNBClassifier', 'PAClassifier', 'SVMClassifier', 'PerceptronClassifier']:
     print('Critical Error: Invalid Model Name. Exiting Program.')
     exit()
@@ -56,8 +59,11 @@ def convertBatchToArray(batch):
             preprocessedImage = preprocess(np.asarray(record["image"]))
             images.append(preprocessedImage)
             labels.append(record['label'])
+        images = np.asarray(images)
+        labels = np.asarray(labels)
+        np.union1d(allLabels, np.unique(labels))
         
-        return (np.asarray(images), np.asarray(labels))
+        return (images, labels)
     
     except:
         print('Error: Empty or Invalid Batch Received.')
@@ -77,7 +83,7 @@ def processBatch(batch):
     """
     X, Y = convertBatchToArray(batch)
     if not testData:
-        train(X, Y, modelType)
+        train(X, Y, modelType, allLabels)
     else:
         test(X, Y, modelType)
 
